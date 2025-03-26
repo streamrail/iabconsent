@@ -339,7 +339,7 @@ func (r *ConsentReader) ReadPublisherTCEntry() (*PublisherTCEntry, error) {
 //
 // Example Usage:
 //
-//   var pc, err = iabconsent.Parse("BONJ5bvONJ5bvAMAPyFRAL7AAAAMhuqKklS-gAAAAAAAAAAAAAAAAAAAAAAAAAA")
+//	var pc, err = iabconsent.Parse("BONJ5bvONJ5bvAMAPyFRAL7AAAAMhuqKklS-gAAAAAAAAAAAAAAAAAAAAAAAAAA")
 //
 // Deprecated: Use ParseV1 to parse V1 consent strings.
 func Parse(s string) (*ParsedConsent, error) {
@@ -352,7 +352,7 @@ func Parse(s string) (*ParsedConsent, error) {
 //
 // Example Usage:
 //
-//   var pc, err = iabconsent.ParseV1("BONJ5bvONJ5bvAMAPyFRAL7AAAAMhuqKklS-gAAAAAAAAAAAAAAAAAAAAAAAAAA")
+//	var pc, err = iabconsent.ParseV1("BONJ5bvONJ5bvAMAPyFRAL7AAAAMhuqKklS-gAAAAAAAAAAAAAAAAAAAAAAAAAA")
 func ParseV1(s string) (*ParsedConsent, error) {
 	var b, err = base64.RawURLEncoding.DecodeString(s)
 	if err != nil {
@@ -395,7 +395,7 @@ func ParseV1(s string) (*ParsedConsent, error) {
 //
 // Example Usage:
 //
-//   var pc, err = iabconsent.ParseV2("COvzTO5OvzTO5BRAAAENAPCoALIAADgAAAAAAewAwABAAlAB6ABBFAAA")
+//	var pc, err = iabconsent.ParseV2("COvzTO5OvzTO5BRAAAENAPCoALIAADgAAAAAAewAwABAAlAB6ABBFAAA")
 func ParseV2(s string) (*V2ParsedConsent, error) {
 	var segments = strings.Split(s, ".")
 
@@ -535,4 +535,47 @@ func TCFVersionFromTCString(s string) TCFVersion {
 	default:
 		return InvalidTCFVersion
 	}
+}
+
+// ParseV2V1 takes a base64 Raw URL Encoded string which represents a TCF v2
+// string and returns a ParsedConsent with its fields populated with
+// the values stored in the string.
+// This function is used for parsing canada gpp string which has v1 version
+// and europe v2 version
+//
+// Example Usage:
+//
+//	var pc, err = iabconsent.ParseV2("COvzTO5OvzTO5BRAAAENAPCoALIAADgAAAAAAewAwABAAlAB6ABBFAAA")
+func ParseV2V1(s string, checkVersion bool) (*V2ParsedConsent, error) {
+	var segments = strings.Split(s, ".")
+
+	var b, err = base64.RawURLEncoding.DecodeString(segments[0])
+	if err != nil {
+		return nil, errors.Wrap(err, "parse v2 consent string")
+	}
+
+	var r = NewConsentReader(b)
+
+	var p = &V2ParsedConsent{}
+	p.Version, _ = r.ReadInt(6)
+
+	if checkVersion && p.Version != int(V2) {
+		return nil, errors.New("non-v2 string passed to v2 parse method")
+	}
+
+	p.Created, _ = r.ReadTime()
+	p.LastUpdated, _ = r.ReadTime()
+	p.CMPID, _ = r.ReadInt(12)
+	p.CMPVersion, _ = r.ReadInt(12)
+	p.ConsentScreen, _ = r.ReadInt(6)
+	p.ConsentLanguage, _ = r.ReadString(2)
+	p.VendorListVersion, _ = r.ReadInt(12)
+	p.TCFPolicyVersion, _ = r.ReadInt(6)
+	p.IsServiceSpecific, _ = r.ReadBool()
+	p.UseNonStandardStacks, _ = r.ReadBool()
+	p.SpecialFeaturesOptIn, _ = r.ReadBitField(12)
+	p.PurposesConsent, _ = r.ReadBitField(24)
+	p.PurposesLITransparency, _ = r.ReadBitField(24)
+
+	return p, r.Err
 }
