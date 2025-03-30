@@ -359,7 +359,7 @@ func (p *V2ParsedConsent) MinorVersion() (int, error) {
 	}
 }
 
-func (p *V2ParsedConsent) CheckIfNowAllowedPurposes() bool {
+func (p *V2ParsedConsent) CheckIfNotAllowedPurposes() bool {
 	purposes := p.PurposesConsent
 	liPurposes := p.PurposesLITransparency
 
