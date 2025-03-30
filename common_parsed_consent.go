@@ -4,4 +4,5 @@ package iabconsent
 type ParsedConsentInterface interface {
 	CheckIfNowAllowedPurposes() bool
 	VendorAllowed(vendor int) bool
+	GetVersion() int
 }

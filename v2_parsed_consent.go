@@ -368,3 +368,7 @@ func (p *V2ParsedConsent) CheckIfNowAllowedPurposes() bool {
 	}
 	return false
 }
+
+func (p *V2ParsedConsent) GetVersion() int {
+	return p.Version
+}

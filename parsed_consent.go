@@ -80,3 +80,7 @@ func (p *ParsedConsent) CheckIfNowAllowedPurposes() bool {
 	}
 	return false
 }
+
+func (p *ParsedConsent) GetVersion() int {
+	return p.Version
+}
