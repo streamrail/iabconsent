@@ -4,6 +4,6 @@ package iabconsent
 type ParsedConsentInterface interface {
 	CheckIfNowAllowedPurposes() bool
 	VendorAllowed(vendor int) bool
-	SuitableToProcess(ps []int, vendor int)
+	SuitableToProcess(ps []int, vendor int) bool
 	GetVersion() int
 }
