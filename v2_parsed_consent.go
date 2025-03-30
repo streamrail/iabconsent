@@ -358,3 +358,13 @@ func (p *V2ParsedConsent) MinorVersion() (int, error) {
 		return 100, errors.Errorf("Unsupported TCFPolicyVersion %d", p.TCFPolicyVersion)
 	}
 }
+
+func (p *V2ParsedConsent) CheckAllowedPurposesExists() bool {
+	purposes := p.PurposesConsent
+	liPurposes := p.PurposesLITransparency
+
+	if len(purposes) == 0 && len(liPurposes) == 0 {
+		return true
+	}
+	return false
+}
