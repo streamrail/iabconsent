@@ -72,7 +72,7 @@ type RangeEntry struct {
 	EndVendorID   int
 }
 
-func (p *ParsedConsent) CheckIfNotAllowedPurposes() bool {
+func (p *ParsedConsent) CheckIfPurposesNotAllowed() bool {
 	purposes := p.PurposesAllowed
 
 	if len(purposes) == 0 {

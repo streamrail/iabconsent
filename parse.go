@@ -396,7 +396,7 @@ func ParseV1(s string) (*ParsedConsent, error) {
 // Example Usage:
 //
 //	var pc, err = iabconsent.ParseV2("COvzTO5OvzTO5BRAAAENAPCoALIAADgAAAAAAewAwABAAlAB6ABBFAAA")
-func ParseV2(s string, checkVersion bool) (*V2ParsedConsent, error) {
+func ParseV2(s string) (*V2ParsedConsent, error) {
 	var segments = strings.Split(s, ".")
 
 	var b, err = base64.RawURLEncoding.DecodeString(segments[0])
@@ -411,7 +411,7 @@ func ParseV2(s string, checkVersion bool) (*V2ParsedConsent, error) {
 	// https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/47b45ab362515310183bb3572a367b8391ef4613/TCFv2/IAB%20Tech%20Lab%20-%20Consent%20string%20and%20vendor%20list%20formats%20v2.md#about-the-transparency--consent-string-tc-string
 	var p = &V2ParsedConsent{}
 	p.Version, _ = r.ReadInt(6)
-	if checkVersion && p.Version != int(V2) {
+	if p.Version != int(V2) {
 		return nil, errors.New("non-v2 string passed to v2 parse method")
 	}
 	p.Created, _ = r.ReadTime()
