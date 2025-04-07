@@ -84,3 +84,7 @@ func (p *ParsedConsent) CheckIfPurposesNotAllowed() bool {
 func (p *ParsedConsent) GetVersion() int {
 	return p.Version
 }
+
+func (p *ParsedConsent) IsEmpty() bool {
+	return p == nil
+}

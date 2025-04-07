@@ -372,3 +372,7 @@ func (p *V2ParsedConsent) CheckIfPurposesNotAllowed() bool {
 func (p *V2ParsedConsent) GetVersion() int {
 	return p.Version
 }
+
+func (p *V2ParsedConsent) IsEmpty() bool {
+	return p == nil
+}

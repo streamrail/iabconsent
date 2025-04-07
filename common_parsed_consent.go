@@ -6,4 +6,5 @@ type ParsedConsentData interface {
 	VendorAllowed(vendor int) bool
 	SuitableToProcess(ps []int, vendor int) bool
 	GetVersion() int
+	IsEmpty() bool
 }
